@@ -4,23 +4,29 @@ class User {
   String? uid;
   String? firstName;
   String? lastName;
-  String? imageUrl;
   String? initiales;
+  String? civilite;
+  String? email;
+  String? phone;
 
   GetUser(DataSnapshot dataSnapshot) {
     uid = dataSnapshot.key;
     Map<dynamic, dynamic> map = (dataSnapshot.value as Map);
     firstName = map["firstname"];
     lastName = map['lastName'];
-    imageUrl = map['imageUrl'];
+    civilite = map['civilite'];
+    email = map['email'];
+    phone = map['phone'];
   }
 
   Map toMap() {
     return {
       "firstname": firstName,
       "lastName": lastName,
-      "imageUrl": imageUrl,
-      "uid": uid
+      "uid": uid,
+      "civilite": civilite,
+      "email": email,
+      "phone": phone
     };
   }
 }
