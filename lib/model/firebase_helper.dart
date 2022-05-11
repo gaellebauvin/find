@@ -19,4 +19,8 @@ class FirebaseHelper {
     Map<String, String> map = {"firstName": firstName, "lastName": lastName};
     return user;
   }
+
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
 }

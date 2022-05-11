@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'details_controller.dart';
+import '../../widget/header.dart';
 
 class CategoryController extends StatefulWidget {
   final bool find;
@@ -17,7 +18,7 @@ class CategoryControllerState extends State<CategoryController> {
     'Informatique, electronique',
     'Bijoux, accessoires',
     'Vetements',
-    'Clés',
+    'Cles',
     'Divers'
   ];
   String _category = "";
@@ -36,6 +37,7 @@ class CategoryControllerState extends State<CategoryController> {
               child: Container(
                 margin: const EdgeInsets.only(left: 5, right: 5),
                 child: Column(children: [
+                  Header(),
                   SvgPicture.asset('assets/logo.svg',
                       semanticsLabel: 'Logo Find'),
                   Text("Selectionnez une catégorie", textAlign: TextAlign.left),
