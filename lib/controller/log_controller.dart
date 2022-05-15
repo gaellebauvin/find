@@ -4,6 +4,7 @@ import '../model/firebase_helper.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'findForm/find_controller.dart';
 
 class LogController extends StatefulWidget {
   const LogController({Key? key}) : super(key: key);
@@ -18,9 +19,8 @@ class LogControllerState extends State<LogController> {
   String _firstname = '';
   String _lastname = "";
   String _phone = "";
-  String _civilite = "";
   String _errorMessage = '';
-  String dropdownValue = 'Femme';
+  String _gender = 'Femme';
   final FirebaseHelper auth = FirebaseHelper();
 
   @override
@@ -92,8 +92,10 @@ class LogControllerState extends State<LogController> {
           } else {
             //creation de compte
             if (_firstname.isNotEmpty && _lastname.isNotEmpty) {
-              auth.create(_mail, _pwd, _firstname, _lastname);
-              auth.userSetup(_firstname);
+              auth.create(_mail, _pwd);
+              auth.userSetup(_gender, _firstname, _lastname, _phone, _mail);
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => FindController()));
               setState(() {
                 _errorMessage = "";
               });
@@ -151,14 +153,14 @@ class LogControllerState extends State<LogController> {
       ));
     } else {
       textfield.add(DropdownButton<String>(
-        value: dropdownValue,
+        value: _gender,
         icon: const Icon(Icons.arrow_downward),
         underline: Container(
           height: 10,
         ),
         onChanged: (String? newValue) {
           setState(() {
-            dropdownValue = newValue!;
+            _gender = newValue!;
           });
         },
         items: <String>['Femme', 'Homme']
@@ -219,7 +221,9 @@ class LogControllerState extends State<LogController> {
         ),
         initialCountryCode: 'FR',
         onChanged: (phone) {
-          print(phone.completeNumber);
+          setState(() {
+            _phone = phone.completeNumber;
+          });
         },
       ));
       textfield.add(

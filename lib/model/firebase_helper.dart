@@ -12,20 +12,26 @@ class FirebaseHelper {
     return user;
   }
 
-  Future<User?> create(
-      String email, String password, String firstName, String lastName) async {
+  Future<User?> create(String email, String password) async {
     final create = await auth.createUserWithEmailAndPassword(
         email: email, password: password);
     final User? user = create.user;
-    Map<String, String> map = {"firstName": firstName, "lastName": lastName};
     return user;
   }
 
-  Future<void> userSetup(String firstname) async {
+  Future<void> userSetup(String firstName, String lastName, String gender,
+      String phone, String email) async {
     var users = FirebaseFirestore.instance.collection('Users');
     final currentUser = await FirebaseAuth.instance.currentUser!;
     final uid = currentUser.uid.toString();
-    users.add({"firstname": firstname, "uid": uid});
+    users.add({
+      "uid": uid,
+      "firstName": firstName,
+      "lastName": lastName,
+      "gender": gender,
+      "phone": phone,
+      "email": email
+    });
     return;
   }
 

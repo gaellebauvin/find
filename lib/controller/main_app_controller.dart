@@ -119,10 +119,6 @@ class MainAppControllerState extends State<MainAppController> {
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.blue),
                   ),
-                  // onPressed: () {
-                  //   Navigator.of(context).push(MaterialPageRoute(
-                  //       builder: (context) => FindController()));
-                  // },
                   onPressed: () {
                     auth.signOut();
                     Navigator.of(context).push(MaterialPageRoute(
