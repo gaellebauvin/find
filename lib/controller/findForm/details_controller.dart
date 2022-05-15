@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../widget/tool_bar.dart';
 import 'package:intl/intl.dart';
 import 'summary_controller.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -37,51 +36,50 @@ class DetailsControllerState extends State<DetailsController> {
     final bool _find = widget.find;
     final String _category = widget.category;
     return Scaffold(
-        resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
-          child: Column(children: [
-            Container(
-              margin: const EdgeInsets.only(
-                  top: 50, bottom: 20, left: 20, right: 20),
-              child: Header(),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width - 40,
-              height: MediaQuery.of(context).size.height / 1.05,
-              child: Container(
-                  margin: const EdgeInsets.only(left: 5, right: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: textfields(),
-                  )),
-            ),
-            SizedBox(
-                width: 250,
-                child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      primary: Colors.white,
-                      backgroundColor: const Color(0xFF39ADAD),
-                      minimumSize: const Size.fromHeight(50),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => SummaryController(
-                              find: _find,
-                              category: _category,
-                              address: _address,
-                              hours: _timeinput.text,
-                              date: _dateinput.text,
-                              model: _model,
-                              brand: _brand,
-                              color: color,
-                              description: _description)));
-                    },
-                    child: Text('Suivant', textAlign: TextAlign.center))),
-          ]),
-        ));
+      child: Column(children: [
+        Container(
+          margin:
+              const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
+          child: Header(),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width - 40,
+          height: MediaQuery.of(context).size.height / 1.05,
+          child: Container(
+              margin: const EdgeInsets.only(left: 5, right: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: textfields(),
+              )),
+        ),
+        SizedBox(
+            width: 250,
+            child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: const Color(0xFF39ADAD),
+                  minimumSize: const Size.fromHeight(50),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SummaryController(
+                          find: _find,
+                          category: _category,
+                          address: _address,
+                          hours: _timeinput.text,
+                          date: _dateinput.text,
+                          model: _model,
+                          brand: _brand,
+                          color: color,
+                          description: _description)));
+                },
+                child: Text('Suivant', textAlign: TextAlign.center))),
+      ]),
+    ));
   }
 
   List<Widget> textfields() {

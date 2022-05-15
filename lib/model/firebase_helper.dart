@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseHelper {
   //AUTH
@@ -18,6 +19,14 @@ class FirebaseHelper {
     final User? user = create.user;
     Map<String, String> map = {"firstName": firstName, "lastName": lastName};
     return user;
+  }
+
+  Future<void> userSetup(String firstname) async {
+    var users = FirebaseFirestore.instance.collection('Users');
+    final currentUser = await FirebaseAuth.instance.currentUser!;
+    final uid = currentUser.uid.toString();
+    users.add({"firstname": firstname, "uid": uid});
+    return;
   }
 
   Future<void> signOut() async {

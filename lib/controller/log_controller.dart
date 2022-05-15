@@ -93,6 +93,7 @@ class LogControllerState extends State<LogController> {
             //creation de compte
             if (_firstname.isNotEmpty && _lastname.isNotEmpty) {
               auth.create(_mail, _pwd, _firstname, _lastname);
+              auth.userSetup(_firstname);
               setState(() {
                 _errorMessage = "";
               });
