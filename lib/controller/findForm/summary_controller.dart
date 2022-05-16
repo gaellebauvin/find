@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../main_app_controller.dart';
 import '../../model/firebase_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import '../messenger/messenger_controller.dart';
 
 class SummaryController extends StatefulWidget {
   final bool find;
@@ -149,10 +151,70 @@ class SummaryControllerState extends State<SummaryController> {
                     'address': _address,
                     'color': _color_hex,
                     'uid_user': userID
-                  }).then((documentSnapshot) {
-                    print('good');
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => MainAppController()));
+                  });
+
+                  db
+                      .collection('findForm')
+                      .where("find", isNotEqualTo: _find)
+                      .get()
+                      .then((QuerySnapshot snapshot) {
+                    for (var doc in snapshot.docs) {
+                      if (_find == false) {
+                        print(_find);
+                        print(DateTime.parse(doc['date']));
+                        print(DateTime.parse(_date));
+                        if (DateTime.parse(doc['date'])
+                                .compareTo(DateTime.parse(_date)) >
+                            0) {
+                          print('date');
+                          if (doc['uid_user'] != userID &&
+                              _category == doc['category'] &&
+                              _model == doc['model'] &&
+                              _brand == doc['brand'] &&
+                              _color_hex == doc['color']) {
+                            db.collection("match").add({
+                              "user_id_find": doc['uid_user'],
+                              "user_id_lost": userID,
+                              "user_find_answer": "",
+                              "user_lost_answer": ""
+                            }).then((_) => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MessengerController())));
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => MainAppController()));
+                          }
+                        }
+                      } else {
+                        print(_find);
+                        print(DateTime.parse(doc['date']));
+                        print(DateTime.parse(_date));
+                        if (DateTime.parse(doc['date'])
+                                .compareTo(DateTime.parse(_date)) >
+                            0) {
+                          if (doc['uid_user'] != userID &&
+                              _category == doc['category'] &&
+                              _model == doc['model'] &&
+                              _brand == doc['brand'] &&
+                              _color_hex == doc['color']) {
+                            db.collection("match").add({
+                              "user_id_find": userID,
+                              "user_id_lost": doc['uid_user'],
+                              "user_find_answer": "",
+                              "user_lost_answer": ""
+                            }).then((_) => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MessengerController())));
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => MainAppController()));
+                          }
+                        }
+                      }
+                    }
+                    ;
                   });
                 },
                 child: Text('Envoyer', textAlign: TextAlign.center)))

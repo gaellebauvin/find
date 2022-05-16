@@ -126,6 +126,16 @@ class MainAppControllerState extends State<MainAppController> {
                   },
                   child: Text("Deconnexion"),
                 ),
+                TextButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                  ),
+                  onPressed: () {
+                    print(FirebaseAuth.instance.currentUser?.uid);
+                  },
+                  child: Text("Test"),
+                ),
               ]),
             ),
           ]),

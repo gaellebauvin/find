@@ -19,7 +19,7 @@ class FirebaseHelper {
     return user;
   }
 
-  Future<void> userSetup(String firstName, String lastName, String gender,
+  Future<void> userSetup(String gender, String firstName, String lastName,
       String phone, String email) async {
     var users = FirebaseFirestore.instance.collection('Users');
     final currentUser = await FirebaseAuth.instance.currentUser!;

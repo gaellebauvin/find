@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'findForm/find_controller.dart';
+import 'main_app_controller.dart';
 
 class LogController extends StatefulWidget {
   const LogController({Key? key}) : super(key: key);
@@ -89,6 +90,8 @@ class LogControllerState extends State<LogController> {
           //Pour la connexion
           if (_log) {
             auth.handleSignIn(_mail, _pwd);
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => MainAppController()));
           } else {
             //creation de compte
             if (_firstname.isNotEmpty && _lastname.isNotEmpty) {
