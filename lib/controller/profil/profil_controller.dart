@@ -5,6 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'profil_edit_infos_controller.dart';
+import 'profil_edit_password_controller.dart';
+import '../log_controller.dart';
 
 class ProfilController extends StatefulWidget {
   const ProfilController({Key? key}) : super(key: key);
@@ -13,6 +15,7 @@ class ProfilController extends StatefulWidget {
 }
 
 class ProfilControllerState extends State<ProfilController> {
+  final FirebaseHelper auth = FirebaseHelper();
   Widget _buildList(QuerySnapshot snapshot) {
     return ListView.builder(
         itemCount: snapshot.docs.length,
@@ -35,8 +38,14 @@ class ProfilControllerState extends State<ProfilController> {
                     Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(doc['firstName']),
-                          Text(doc['lastName']),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Text(doc['firstName']),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 30),
+                            child: Text(doc['lastName']),
+                          )
                         ])
                   ])),
               Padding(
@@ -53,6 +62,36 @@ class ProfilControllerState extends State<ProfilController> {
                         fontWeight: FontWeight.w800,
                       ))),
               Text(doc['phone']),
+              Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 5),
+                  child: Text("Pseudo :",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                      ))),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Text(doc['pseudo']),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: SizedBox(
+                    child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          primary: Colors.white,
+                          backgroundColor: const Color(0xFF39ADAD),
+                          minimumSize: const Size.fromHeight(50),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  ProfilEditInfosController()));
+                        },
+                        child: Text('Modifier mes informations',
+                            textAlign: TextAlign.center))),
+              ),
               SizedBox(
                   child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
@@ -65,21 +104,9 @@ class ProfilControllerState extends State<ProfilController> {
                       ),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ProfilEditInfosController()));
+                            builder: (context) =>
+                                ProfilEditPasswordController()));
                       },
-                      child: Text('Modifier mes informations',
-                          textAlign: TextAlign.center))),
-              SizedBox(
-                  child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        primary: Colors.white,
-                        backgroundColor: const Color(0xFF39ADAD),
-                        minimumSize: const Size.fromHeight(50),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                      ),
-                      onPressed: () {},
                       child: Text('Modifier mon mot de passe',
                           textAlign: TextAlign.center)))
             ]),
@@ -105,9 +132,14 @@ class ProfilControllerState extends State<ProfilController> {
               foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
             ),
             onPressed: () {
-              print(FirebaseAuth.instance.currentUser?.uid);
+              auth.signOut();
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => LogController()));
             },
-            child: Text("Deconnexion"),
+            child: Text(
+              "Deconnexion",
+              style: TextStyle(color: const Color(0xFF39ADAD)),
+            ),
           ),
           Container(
               child: StreamBuilder<QuerySnapshot>(

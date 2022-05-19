@@ -37,6 +37,7 @@ class SummaryController extends StatefulWidget {
 class SummaryControllerState extends State<SummaryController> {
   final db = FirebaseFirestore.instance;
   final FirebaseHelper auth = FirebaseHelper();
+  String doc_ref = "";
 
   var userID = FirebaseAuth.instance.currentUser?.uid;
 
@@ -151,6 +152,9 @@ class SummaryControllerState extends State<SummaryController> {
                     'address': _address,
                     'color': _color_hex,
                     'uid_user': userID
+                  }).then((docRef) {
+                    print(docRef.id);
+                    doc_ref = docRef.id;
                   });
 
                   db
@@ -160,13 +164,9 @@ class SummaryControllerState extends State<SummaryController> {
                       .then((QuerySnapshot snapshot) {
                     for (var doc in snapshot.docs) {
                       if (_find == false) {
-                        print(_find);
-                        print(DateTime.parse(doc['date']));
-                        print(DateTime.parse(_date));
                         if (DateTime.parse(doc['date'])
                                 .compareTo(DateTime.parse(_date)) >
                             0) {
-                          print('date');
                           if (doc['uid_user'] != userID &&
                               _category == doc['category'] &&
                               _model == doc['model'] &&
@@ -174,7 +174,10 @@ class SummaryControllerState extends State<SummaryController> {
                               _color_hex == doc['color']) {
                             db.collection("match").add({
                               "user_id_find": doc['uid_user'],
-                              "user_id_lost": userID,
+                              "user_id_lost":
+                                  FirebaseAuth.instance.currentUser!.uid,
+                              "request_id_find": doc.id,
+                              "request_id_lost": doc_ref,
                               "user_find_answer": "",
                               "user_lost_answer": ""
                             }).then((_) => Navigator.of(context).push(
@@ -185,11 +188,11 @@ class SummaryControllerState extends State<SummaryController> {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => MainAppController()));
                           }
+                        } else {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => MainAppController()));
                         }
                       } else {
-                        print(_find);
-                        print(DateTime.parse(doc['date']));
-                        print(DateTime.parse(_date));
                         if (DateTime.parse(doc['date'])
                                 .compareTo(DateTime.parse(_date)) >
                             0) {
@@ -199,18 +202,22 @@ class SummaryControllerState extends State<SummaryController> {
                               _brand == doc['brand'] &&
                               _color_hex == doc['color']) {
                             db.collection("match").add({
-                              "user_id_find": userID,
+                              "user_id_find":
+                                  FirebaseAuth.instance.currentUser!.uid,
                               "user_id_lost": doc['uid_user'],
+                              "request_id_find": doc_ref,
+                              "request_id_lost": doc.id,
                               "user_find_answer": "",
-                              "user_lost_answer": ""
+                              "user_lost_answer": "",
+                              "status": 1,
                             }).then((_) => Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         MessengerController())));
-                          } else {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => MainAppController()));
                           }
+                        } else {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => MainAppController()));
                         }
                       }
                     }

@@ -12,15 +12,11 @@ class FirebaseHelper {
     return user;
   }
 
-  Future<User?> create(String email, String password) async {
+  Future<User?> create(String email, String password, String gender,
+      String firstName, String lastName, String phone) async {
     final create = await auth.createUserWithEmailAndPassword(
         email: email, password: password);
     final User? user = create.user;
-    return user;
-  }
-
-  Future<void> userSetup(String gender, String firstName, String lastName,
-      String phone, String email) async {
     var users = FirebaseFirestore.instance.collection('Users');
     final currentUser = await FirebaseAuth.instance.currentUser!;
     final uid = currentUser.uid.toString();
@@ -32,7 +28,17 @@ class FirebaseHelper {
       "phone": phone,
       "email": email
     });
-    return;
+    return user;
+  }
+
+  Future<User?> changePassword(String password) async {
+    User user = await FirebaseAuth.instance.currentUser!;
+
+    user.updatePassword(password).then((_) {
+      print("Successfully changed password");
+    }).catchError((error) {
+      print("Password can't be changed" + error.toString());
+    });
   }
 
   Future<void> signOut() async {

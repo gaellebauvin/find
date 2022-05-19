@@ -114,28 +114,6 @@ class MainAppControllerState extends State<MainAppController> {
                     child: Center(
                         child: SvgPicture.asset('assets/logo.svg',
                             semanticsLabel: 'Logo Find'))),
-                TextButton(
-                  style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
-                  ),
-                  onPressed: () {
-                    auth.signOut();
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => LogController()));
-                  },
-                  child: Text("Deconnexion"),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
-                  ),
-                  onPressed: () {
-                    print(FirebaseAuth.instance.currentUser?.uid);
-                  },
-                  child: Text("Test"),
-                ),
               ]),
             ),
           ]),

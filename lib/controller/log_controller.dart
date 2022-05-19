@@ -89,14 +89,14 @@ class LogControllerState extends State<LogController> {
           });
           //Pour la connexion
           if (_log) {
-            auth.handleSignIn(_mail, _pwd);
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => MainAppController()));
+            auth.handleSignIn(_mail, _pwd).then((_) async {
+              await Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MainAppController()));
+            });
           } else {
             //creation de compte
             if (_firstname.isNotEmpty && _lastname.isNotEmpty) {
-              auth.create(_mail, _pwd);
-              auth.userSetup(_gender, _firstname, _lastname, _phone, _mail);
+              auth.create(_mail, _pwd, _gender, _firstname, _lastname, _phone);
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => FindController()));
               setState(() {
@@ -155,12 +155,13 @@ class LogControllerState extends State<LogController> {
         },
       ));
     } else {
-      textfield.add(DropdownButton<String>(
+      textfield.add(Container(
+          child: DropdownButtonFormField<String>(
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+        ),
         value: _gender,
         icon: const Icon(Icons.arrow_downward),
-        underline: Container(
-          height: 10,
-        ),
         onChanged: (String? newValue) {
           setState(() {
             _gender = newValue!;
@@ -173,50 +174,55 @@ class LogControllerState extends State<LogController> {
             child: Text(value),
           );
         }).toList(),
-      ));
+      )));
       textfield.add(Container(
           child: Row(children: [
         Expanded(
             child: Column(
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Prénom*",
-                // errorText: 'Le prénom n\'est pas valide',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onChanged: (String value) {
-                setState(() {
-                  _firstname = value;
-                });
-              },
-            )
+            Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Prénom*",
+                    // errorText: 'Le prénom n\'est pas valide',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onChanged: (String value) {
+                    setState(() {
+                      _firstname = value;
+                    });
+                  },
+                ))
           ],
         )),
         Expanded(
             child: Column(
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Nom*",
-                // errorText: 'Le prénom n\'est pas valide',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onChanged: (String value) {
-                setState(() {
-                  _lastname = value;
-                });
-              },
-            )
+            Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Nom*",
+                    // errorText: 'Le prénom n\'est pas valide',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onChanged: (String value) {
+                    setState(() {
+                      _lastname = value;
+                    });
+                  },
+                ))
           ],
         ))
       ])));
       textfield.add(IntlPhoneField(
         decoration: InputDecoration(
+          counter: Offstage(),
           labelText: 'Numéro de téléphone*',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
