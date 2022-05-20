@@ -31,16 +31,21 @@ class LogControllerState extends State<LogController> {
         body: SingleChildScrollView(
           child: Column(children: [
             Container(
-              margin: const EdgeInsets.only(
-                  top: 70, bottom: 50, left: 20, right: 20),
+              margin: const EdgeInsets.only(top: 70, left: 20, right: 20),
               width: MediaQuery.of(context).size.width - 40,
-              height: MediaQuery.of(context).size.height / 1.5,
               child: Container(
                   margin: const EdgeInsets.only(left: 5, right: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: textfields(),
-                  )),
+                  child: Column(children: [
+                    SvgPicture.asset('assets/logo.svg',
+                        semanticsLabel: 'Logo Find'),
+                    Container(
+                        height: MediaQuery.of(context).size.height / 1.6,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: textfields(),
+                        ))
+                  ])),
             ),
             SizedBox(
                 width: 250,
@@ -119,15 +124,11 @@ class LogControllerState extends State<LogController> {
 
   List<Widget> textfields() {
     List<Widget> textfield = [];
-    textfield.add(
-      SvgPicture.asset('assets/logo.svg', semanticsLabel: 'Logo Find'),
-    );
     if (_log) {
       textfield.add(
         TextField(
           decoration: InputDecoration(
             hintText: "Adresse mail",
-            // errorText: 'Le prénom n\'est pas valide',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -142,7 +143,6 @@ class LogControllerState extends State<LogController> {
       textfield.add(TextField(
         decoration: InputDecoration(
           hintText: "Mot de passe",
-          // errorText: 'Le prénom n\'est pas valide',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -155,6 +155,12 @@ class LogControllerState extends State<LogController> {
         },
       ));
     } else {
+      textfield.add(Container(
+        child: Text(
+          'Créez votre compte',
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ));
       textfield.add(Container(
           child: DropdownButtonFormField<String>(
         decoration: const InputDecoration(
@@ -185,7 +191,6 @@ class LogControllerState extends State<LogController> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: "Prénom*",
-                    // errorText: 'Le prénom n\'est pas valide',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -206,7 +211,6 @@ class LogControllerState extends State<LogController> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: "Nom*",
-                    // errorText: 'Le prénom n\'est pas valide',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -253,7 +257,6 @@ class LogControllerState extends State<LogController> {
       textfield.add(TextField(
         decoration: InputDecoration(
           hintText: "Mot de passe*",
-          // errorText: 'Le prénom n\'est pas valide',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'profil_controller.dart';
+import '../../widget/header.dart';
 
 class ProfilEditInfosController extends StatefulWidget {
   const ProfilEditInfosController({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class ProfilEditInfosController extends StatefulWidget {
 }
 
 class ProfilEditInfosControllerState extends State<ProfilEditInfosController> {
+  final _formKey = GlobalKey<FormState>();
   String _mail = "";
   String _firstname = "";
   String _lastname = "";
@@ -33,126 +35,148 @@ class ProfilEditInfosControllerState extends State<ProfilEditInfosController> {
               height: MediaQuery.of(context).size.height / 1.5,
               margin: const EdgeInsets.only(bottom: 10, left: 50, right: 50),
               padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-              child: Column(children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.only(
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        child: TextFormField(
-                          initialValue: doc['firstName'],
-                          decoration: InputDecoration(
-                            labelText: "Prénom",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+              child: Form(
+                  key: _formKey,
+                  child: Column(children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              bottom: 10,
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: const Color(0xFF39ADAD)),
-                              borderRadius: BorderRadius.circular(10),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Veuillez renseigner un prénom';
+                                }
+                                return null;
+                              },
+                              initialValue: doc['firstName'],
+                              decoration: InputDecoration(
+                                labelText: "Prénom",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: const Color(0xFF39ADAD)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onChanged: (String value) {
+                                setState(() {
+                                  _firstname = value;
+                                });
+                              },
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              bottom: 10,
                             ),
-                          ),
-                          onChanged: (String value) {
-                            setState(() {
-                              _firstname = value;
-                            });
-                          },
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.only(
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        child: TextFormField(
-                          initialValue: doc['lastName'],
-                          decoration: InputDecoration(
-                            labelText: "Nom",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Veuillez renseigner un nom de famille';
+                                }
+                                return null;
+                              },
+                              initialValue: doc['lastName'],
+                              decoration: InputDecoration(
+                                labelText: "Nom",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: const Color(0xFF39ADAD)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onChanged: (String value) {
+                                setState(() {
+                                  _lastname = value;
+                                });
+                              },
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              bottom: 10,
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: const Color(0xFF39ADAD)),
-                              borderRadius: BorderRadius.circular(10),
+                            child: IntlPhoneField(
+                              initialValue: _phone,
+                              decoration: InputDecoration(
+                                counter: Offstage(),
+                                labelText: 'Numéro de téléphone',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              initialCountryCode: 'FR',
+                              onChanged: (phone) {
+                                setState(() {
+                                  _phone = phone.completeNumber;
+                                });
+                              },
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              bottom: 30,
                             ),
-                          ),
-                          onChanged: (String value) {
-                            setState(() {
-                              _lastname = value;
-                            });
-                          },
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.only(
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        child: IntlPhoneField(
-                          initialValue: _phone,
-                          decoration: InputDecoration(
-                            counter: Offstage(),
-                            labelText: 'Numéro de téléphone',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Veuillez renseigner un email';
+                                }
+                                return null;
+                              },
+                              initialValue: doc['email'],
+                              decoration: InputDecoration(
+                                labelText: "Adresse mail",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onChanged: (String value) {
+                                setState(() {
+                                  _mail = value;
+                                });
+                              },
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                        child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor: const Color(0xFF39ADAD),
+                              minimumSize: const Size.fromHeight(50),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
                             ),
-                          ),
-                          initialCountryCode: 'FR',
-                          onChanged: (phone) {
-                            setState(() {
-                              _phone = phone.completeNumber;
-                            });
-                          },
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.only(
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        child: TextFormField(
-                          initialValue: doc['email'],
-                          decoration: InputDecoration(
-                            labelText: "Adresse mail",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onChanged: (String value) {
-                            setState(() {
-                              _mail = value;
-                            });
-                          },
-                        )),
-                  ],
-                ),
-                SizedBox(
-                    child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          primary: Colors.white,
-                          backgroundColor: const Color(0xFF39ADAD),
-                          minimumSize: const Size.fromHeight(50),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                        ),
-                        onPressed: () {
-                          FirebaseFirestore.instance
-                              .collection("Users")
-                              .doc(doc_ref)
-                              .update({
-                            "email": _mail,
-                            "firstName": _firstname,
-                            "lastName": _lastname,
-                            "phone": "+33${_phone}"
-                          });
-                          Navigator.pop(context, false);
-                        },
-                        child: Text('Valider les modifications',
-                            textAlign: TextAlign.center))),
-              ]));
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                FirebaseFirestore.instance
+                                    .collection("Users")
+                                    .doc(doc_ref)
+                                    .update({
+                                  "email": _mail,
+                                  "firstName": _firstname,
+                                  "lastName": _lastname,
+                                  "phone": "+33${_phone}"
+                                });
+                                Navigator.pop(context, false);
+                              }
+                            },
+                            child: Text('Valider les modifications',
+                                textAlign: TextAlign.center))),
+                  ])));
         });
   }
 
@@ -162,7 +186,12 @@ class ProfilEditInfosControllerState extends State<ProfilEditInfosController> {
         resizeToAvoidBottomInset: false,
         body: Column(children: [
           Container(
-              margin: const EdgeInsets.only(top: 60, left: 20, right: 20),
+            margin:
+                const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
+            child: Header(),
+          ),
+          Container(
+              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
               width: MediaQuery.of(context).size.width,
               child: Column(children: [
                 SvgPicture.asset('assets/logo.svg',

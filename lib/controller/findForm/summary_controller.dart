@@ -52,7 +52,6 @@ class SummaryControllerState extends State<SummaryController> {
     final String _brand = widget.brand;
     final Color _color = widget.color;
     final String _description = widget.description;
-    // MaterialColor\(primary value: Color\([^)]*\)\)
     String _color_hex = _color
         .toString()
         .replaceAll(new RegExp(r"MaterialColor\(primary value: Color\("), '');
@@ -123,6 +122,7 @@ class SummaryControllerState extends State<SummaryController> {
                               fontWeight: FontWeight.w800,
                             ))),
                     Text("Modèle: ${_model}"),
+                    Text("Marque: ${_brand}"),
                     Row(children: [
                       Text("Couleur: "),
                       Container(color: _color, width: 50, height: 20)
@@ -153,76 +153,77 @@ class SummaryControllerState extends State<SummaryController> {
                     'color': _color_hex,
                     'uid_user': userID
                   }).then((docRef) {
-                    print(docRef.id);
                     doc_ref = docRef.id;
-                  });
-
-                  db
-                      .collection('findForm')
-                      .where("find", isNotEqualTo: _find)
-                      .get()
-                      .then((QuerySnapshot snapshot) {
-                    for (var doc in snapshot.docs) {
-                      if (_find == false) {
-                        if (DateTime.parse(doc['date'])
-                                .compareTo(DateTime.parse(_date)) >
-                            0) {
-                          if (doc['uid_user'] != userID &&
-                              _category == doc['category'] &&
-                              _model == doc['model'] &&
-                              _brand == doc['brand'] &&
-                              _color_hex == doc['color']) {
-                            db.collection("match").add({
-                              "user_id_find": doc['uid_user'],
-                              "user_id_lost":
-                                  FirebaseAuth.instance.currentUser!.uid,
-                              "request_id_find": doc.id,
-                              "request_id_lost": doc_ref,
-                              "user_find_answer": "",
-                              "user_lost_answer": ""
-                            }).then((_) => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        MessengerController())));
+                  }).then((_) => db
+                          .collection('findForm')
+                          .where("find", isNotEqualTo: _find)
+                          .get()
+                          .then((QuerySnapshot snapshot) {
+                        for (var doc in snapshot.docs) {
+                          if (_find == false) {
+                            if (DateTime.parse(doc['date'])
+                                    .compareTo(DateTime.parse(_date)) >
+                                0) {
+                              if (doc['uid_user'] != userID &&
+                                  _category == doc['category'] &&
+                                  _model == doc['model'] &&
+                                  _brand == doc['brand'] &&
+                                  _color_hex == doc['color']) {
+                                db.collection("match").add({
+                                  "user_id_find": doc['uid_user'],
+                                  "user_id_lost":
+                                      FirebaseAuth.instance.currentUser!.uid,
+                                  "request_id_find": doc.id,
+                                  "request_id_lost": doc_ref,
+                                  "user_find_answer": "",
+                                  "user_lost_answer": "",
+                                  "status": 1
+                                }).then((_) => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MessengerController())));
+                              } else {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => MainAppController()));
+                              }
+                            } else {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => MainAppController()));
+                            }
                           } else {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => MainAppController()));
+                            if (DateTime.parse(doc['date'])
+                                    .compareTo(DateTime.parse(_date)) >
+                                0) {
+                              if (doc['uid_user'] != userID &&
+                                  _category == doc['category'] &&
+                                  _model == doc['model'] &&
+                                  _brand == doc['brand'] &&
+                                  _color_hex == doc['color']) {
+                                db.collection("match").add({
+                                  "user_id_find":
+                                      FirebaseAuth.instance.currentUser!.uid,
+                                  "user_id_lost": doc['uid_user'],
+                                  "request_id_find": doc_ref,
+                                  "request_id_lost": doc.id,
+                                  "user_find_answer": "",
+                                  "user_lost_answer": "",
+                                  "status": 1,
+                                }).then((_) => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MessengerController())));
+                              } else {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => MainAppController()));
+                              }
+                            } else {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => MainAppController()));
+                            }
                           }
-                        } else {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => MainAppController()));
                         }
-                      } else {
-                        if (DateTime.parse(doc['date'])
-                                .compareTo(DateTime.parse(_date)) >
-                            0) {
-                          if (doc['uid_user'] != userID &&
-                              _category == doc['category'] &&
-                              _model == doc['model'] &&
-                              _brand == doc['brand'] &&
-                              _color_hex == doc['color']) {
-                            db.collection("match").add({
-                              "user_id_find":
-                                  FirebaseAuth.instance.currentUser!.uid,
-                              "user_id_lost": doc['uid_user'],
-                              "request_id_find": doc_ref,
-                              "request_id_lost": doc.id,
-                              "user_find_answer": "",
-                              "user_lost_answer": "",
-                              "status": 1,
-                            }).then((_) => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        MessengerController())));
-                          }
-                        } else {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => MainAppController()));
-                        }
-                      }
-                    }
-                    ;
-                  });
+                        ;
+                      }));
                 },
                 child: Text('Envoyer', textAlign: TextAlign.center)))
       ]),

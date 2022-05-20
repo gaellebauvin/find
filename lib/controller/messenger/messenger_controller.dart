@@ -56,6 +56,39 @@ class MessengerControllerState extends State<MessengerController> {
         });
   }
 
+  Widget _buildListFind(snapshot, _status, doc) {
+    return Container(
+        padding:
+            const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        decoration: const BoxDecoration(
+          color: const Color(0xFFE4E4E6),
+        ),
+        child: Row(children: [
+          SvgPicture.asset('assets/person_icon.svg',
+              semanticsLabel: 'Icon de l\'utilisateur'),
+          SizedBox(
+              width: MediaQuery.of(context).size.width - 100,
+              child: Column(children: [
+                Row(children: [
+                  Padding(
+                      padding: const EdgeInsets.only(top: 10, left: 10),
+                      child: Text(doc['model'], textAlign: TextAlign.left)),
+                  Padding(
+                      padding:
+                          const EdgeInsets.only(top: 10, left: 5, right: 10),
+                      child: Text(doc['brand'], textAlign: TextAlign.left)),
+                ]),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10, bottom: 10, left: 10, right: 10),
+                  child: Text((_status == 3)
+                      ? 'Après avoir vu la description, la personne n\'a pas donné suite'
+                      : 'Vous êtes en attente de réponse de votre match'),
+                )
+              ])),
+        ]));
+  }
+
   Widget _buildList(QuerySnapshot snapshot) {
     return ListView.builder(
         shrinkWrap: true,
@@ -63,7 +96,7 @@ class MessengerControllerState extends State<MessengerController> {
         itemBuilder: (context, index) {
           final doc = snapshot.docs[index];
           final doc_ref = snapshot.docs[index].reference.id;
-
+          final _status = doc['status'];
           final _match = doc_ref;
           final _request_id =
               (_find) ? doc['request_id_find'] : doc['request_id_lost'];
@@ -104,7 +137,18 @@ class MessengerControllerState extends State<MessengerController> {
               ((_find == true && doc['user_lost_answer'] != '') ||
                   (_find == false && doc['user_find_answer'] != ''))) {
             return Container(
-                child: Text('Vous êtes en attente de réponse de votre match'));
+                child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    future: FirebaseFirestore.instance
+                        .collection("findForm")
+                        .doc(_request_id)
+                        .get(),
+                    builder: (_, snapshot) {
+                      if (!snapshot.hasData) return LinearProgressIndicator();
+
+                      final doc = snapshot.data!;
+                      return Container(
+                          child: _buildListFind(snapshot.data!, _status, doc));
+                    }));
           } else if (doc['status'] == 3 &&
               (doc['user_lost_answer'] == doc['user_find_answer'])) {
             return Container(
@@ -124,10 +168,23 @@ class MessengerControllerState extends State<MessengerController> {
                     }));
           } else if (doc['status'] == 3) {
             return Container(
-                child: Text(
-                    'Après avoir vu la description, la personne n\'a pas donné suite'));
+                child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                    future: FirebaseFirestore.instance
+                        .collection("findForm")
+                        .doc(_request_id)
+                        .get(),
+                    builder: (_, snapshot) {
+                      if (!snapshot.hasData) return LinearProgressIndicator();
+
+                      final doc = snapshot.data!;
+                      return Container(
+                          child: _buildListFind(snapshot.data!, _status, doc));
+                    }));
           }
-          return Container(child: Text("Vous n'avez pas de messages"));
+          return Container(
+              child: Text(
+            "Vous n'avez pas de messages",
+          ));
         });
   }
 

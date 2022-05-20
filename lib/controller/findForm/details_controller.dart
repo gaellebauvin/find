@@ -21,6 +21,7 @@ class DetailsControllerState extends State<DetailsController> {
   String _brand = "";
   Color color = const Color(0xFF39ADAD);
   String _description = "";
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController _timeinput = TextEditingController();
   TextEditingController _dateinput = TextEditingController();
@@ -45,39 +46,44 @@ class DetailsControllerState extends State<DetailsController> {
         ),
         Container(
           width: MediaQuery.of(context).size.width - 40,
-          height: MediaQuery.of(context).size.height / 1.05,
+          height: MediaQuery.of(context).size.height,
           child: Container(
               margin: const EdgeInsets.only(left: 5, right: 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: textfields(),
-              )),
+              child: Form(
+                  key: _formKey,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: textfields()))),
         ),
         SizedBox(
             width: 250,
-            child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  primary: Colors.white,
-                  backgroundColor: const Color(0xFF39ADAD),
-                  minimumSize: const Size.fromHeight(50),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SummaryController(
-                          find: _find,
-                          category: _category,
-                          address: _address,
-                          hours: _timeinput.text,
-                          date: _dateinput.text,
-                          model: _model,
-                          brand: _brand,
-                          color: color,
-                          description: _description)));
-                },
-                child: Text('Suivant', textAlign: TextAlign.center))),
+            child: Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: const Color(0xFF39ADAD),
+                      minimumSize: const Size.fromHeight(50),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SummaryController(
+                                find: _find,
+                                category: _category,
+                                address: _address,
+                                hours: _timeinput.text,
+                                date: _dateinput.text,
+                                model: _model,
+                                brand: _brand,
+                                color: color,
+                                description: _description)));
+                      }
+                    },
+                    child: Text('Suivant', textAlign: TextAlign.center)))),
       ]),
     ));
   }
@@ -94,7 +100,14 @@ class DetailsControllerState extends State<DetailsController> {
         )));
 
     textfield.add(
-      TextField(
+      TextFormField(
+        autofocus: true,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Veuillez renseigner une adresse';
+          }
+          return null;
+        },
         decoration: InputDecoration(
           labelText: "Adresse",
           border: OutlineInputBorder(
@@ -112,7 +125,13 @@ class DetailsControllerState extends State<DetailsController> {
         },
       ),
     );
-    textfield.add(TextField(
+    textfield.add(TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Veuillez renseigner une date';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -158,7 +177,13 @@ class DetailsControllerState extends State<DetailsController> {
         }
       },
     ));
-    textfield.add(TextField(
+    textfield.add(TextFormField(
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Veuillez renseigner une heure';
+          }
+          return null;
+        },
         controller: _timeinput,
         decoration: InputDecoration(
           labelText: "Heure",
@@ -203,15 +228,19 @@ class DetailsControllerState extends State<DetailsController> {
             setState(() {
               _timeinput.text = formattedTime;
             });
-          } else {
-            print("Time is not selected");
           }
         }));
     textfield.add(Text("Description de l’objet",
         style: TextStyle(
           fontWeight: FontWeight.w800,
         )));
-    textfield.add(TextField(
+    textfield.add(TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Veuillez renseigner un modèle';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         labelText: "Nom du modèle",
         border: OutlineInputBorder(
@@ -228,7 +257,13 @@ class DetailsControllerState extends State<DetailsController> {
         });
       },
     ));
-    textfield.add(TextField(
+    textfield.add(TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Veuillez renseigner le nom de la marque';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         labelText: "Nom de la marque",
         border: OutlineInputBorder(
@@ -257,6 +292,12 @@ class DetailsControllerState extends State<DetailsController> {
         child:
             Text('Couleur principal de l’objet', textAlign: TextAlign.center)));
     textfield.add(TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Veuillez renseigner une couleur';
+        }
+        return null;
+      },
       minLines: 6,
       keyboardType: TextInputType.multiline,
       maxLines: null,
