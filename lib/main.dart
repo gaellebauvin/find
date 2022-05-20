@@ -35,7 +35,7 @@ Widget _handleAuth() {
         if (snapshot.hasData) {
           return FindController();
         } else {
-          return const LogController();
+          return const MainAppController();
         }
       });
 }

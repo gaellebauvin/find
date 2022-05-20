@@ -20,6 +20,7 @@ class ProfilEditInfosControllerState extends State<ProfilEditInfosController> {
   String _firstname = "";
   String _lastname = "";
   String _phone = "";
+  String _pseudo = "";
   Widget _buildList(QuerySnapshot snapshot) {
     return ListView.builder(
         itemCount: snapshot.docs.length,
@@ -29,6 +30,7 @@ class ProfilEditInfosControllerState extends State<ProfilEditInfosController> {
           _firstname = doc['firstName'];
           _lastname = doc['lastName'];
           _mail = doc['email'];
+          _pseudo = doc['pseudo'];
           _phone = doc['phone'].replaceAll(
               new RegExp(r'^((0[0-9]{2,4}|\+[0-9]{2}|\(\+?[0-9]{2,4}\)))'), '');
           return Container(
@@ -42,6 +44,36 @@ class ProfilEditInfosControllerState extends State<ProfilEditInfosController> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              bottom: 10,
+                            ),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Veuillez renseigner un pseudo';
+                                }
+                                return null;
+                              },
+                              initialValue: doc['pseudo'],
+                              decoration: InputDecoration(
+                                labelText: "Pseudo",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: const Color(0xFF39ADAD)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onChanged: (String value) {
+                                setState(() {
+                                  _firstname = value;
+                                });
+                              },
+                            )),
                         Padding(
                             padding: const EdgeInsets.only(
                               top: 10,
@@ -169,7 +201,8 @@ class ProfilEditInfosControllerState extends State<ProfilEditInfosController> {
                                   "email": _mail,
                                   "firstName": _firstname,
                                   "lastName": _lastname,
-                                  "phone": "+33${_phone}"
+                                  "phone": "+33${_phone}",
+                                  "pseudo": _pseudo
                                 });
                                 Navigator.pop(context, false);
                               }

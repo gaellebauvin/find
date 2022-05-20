@@ -22,6 +22,7 @@ class LogControllerState extends State<LogController> {
   String _phone = "";
   String _errorMessage = '';
   String _gender = 'Femme';
+  String _pseudo = '';
   final FirebaseHelper auth = FirebaseHelper();
 
   @override
@@ -101,7 +102,8 @@ class LogControllerState extends State<LogController> {
           } else {
             //creation de compte
             if (_firstname.isNotEmpty && _lastname.isNotEmpty) {
-              auth.create(_mail, _pwd, _gender, _firstname, _lastname, _phone);
+              auth.create(
+                  _mail, _pwd, _gender, _firstname, _lastname, _phone, _pseudo);
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => FindController()));
               setState(() {
@@ -181,6 +183,21 @@ class LogControllerState extends State<LogController> {
           );
         }).toList(),
       )));
+      textfield.add(
+        TextField(
+          decoration: InputDecoration(
+            hintText: "Pseudo*",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          onChanged: (String value) {
+            setState(() {
+              _pseudo = value;
+            });
+          },
+        ),
+      );
       textfield.add(Container(
           child: Row(children: [
         Expanded(

@@ -13,7 +13,7 @@ class FirebaseHelper {
   }
 
   Future<User?> create(String email, String password, String gender,
-      String firstName, String lastName, String phone) async {
+      String firstName, String lastName, String phone, String pseudo) async {
     final create = await auth.createUserWithEmailAndPassword(
         email: email, password: password);
     final User? user = create.user;
@@ -26,7 +26,8 @@ class FirebaseHelper {
       "lastName": lastName,
       "gender": gender,
       "phone": phone,
-      "email": email
+      "email": email,
+      "pseudo": pseudo
     });
     return user;
   }
@@ -34,11 +35,7 @@ class FirebaseHelper {
   Future<User?> changePassword(String password) async {
     User user = await FirebaseAuth.instance.currentUser!;
 
-    user.updatePassword(password).then((_) {
-      print("Successfully changed password");
-    }).catchError((error) {
-      print("Password can't be changed" + error.toString());
-    });
+    user.updatePassword(password);
   }
 
   Future<void> signOut() async {
